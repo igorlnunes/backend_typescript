@@ -21,14 +21,17 @@ export class UserController {
       return response.status(400).json({ message: 'Bad request: e-mail obrigatório' })
     }
 
-    this.userService.createUser(user.name, user.email);
+    if (!user.password) {
+      return response.status(400).json({ message: 'Bad request: senha obrigatória' })
+    }
+
+    this.userService.createUser(user.name, user.email, user.password);
 
     return response.status(201).json({ message: "Usuário criado com sucesso!" });
   }
 
-  getAllUsers = (request: Request, response: Response) => {
-    const users = this.userService.getAllUsers;
-    return response.status(200).json(users);
+  getUser = (request: Request, response: Response) => {
+    return response.status(200);
   }
 
   deleteUser = (request: Request, response: Response) => {
