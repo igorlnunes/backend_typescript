@@ -2,9 +2,11 @@ import { UserService } from '../services/UserService';
 import { UserController } from './UserController';
 import { Request } from 'express';
 import { makeMockResponse } from '../__mocks__/mockResponse.mock';
+import { makeMockRequest } from '../__mocks__/mockRequest.mock';
 
 const mockUserService = {
-  createUser: jest.fn()
+  createUser: jest.fn(),
+  getUser: jest.fn()
 }
 
 jest.mock('../services/UserService', () => {
@@ -16,10 +18,8 @@ jest.mock('../services/UserService', () => {
 })
 
 describe('UserController', () => {
-  const mockUserService: Partial<UserService> = {
-    createUser: jest.fn()
-  };
   const userController = new UserController();
+  const mockResponse = makeMockResponse();
 
   it('Deve adicionar um novo usuário', () => {
     const mockRequest = {
@@ -29,7 +29,7 @@ describe('UserController', () => {
         password: 'password'
       }
     } as Request;
-    const mockResponse = makeMockResponse();
+
     userController.createUser(mockRequest, mockResponse);
     expect(mockResponse.state.status).toBe(201);
     expect(mockResponse.state.json).toMatchObject({ message: 'Usuário criado com sucesso!' });
@@ -43,7 +43,7 @@ describe('UserController', () => {
         password: 'password'
       }
     } as Request;
-    const mockResponse = makeMockResponse();
+
     userController.createUser(mockRequest, mockResponse);
     expect(mockResponse.state.status).toBe(400);
     expect(mockResponse.state.json).toMatchObject({ message: 'Bad request: nome obrigatório' });
@@ -57,7 +57,7 @@ describe('UserController', () => {
         password: 'password'
       }
     } as Request;
-    const mockResponse = makeMockResponse();
+
     userController.createUser(mockRequest, mockResponse);
     expect(mockResponse.state.status).toBe(400);
     expect(mockResponse.state.json).toMatchObject({ message: 'Bad request: e-mail obrigatório' });
@@ -71,7 +71,7 @@ describe('UserController', () => {
         password: ''
       }
     } as Request;
-    const mockResponse = makeMockResponse();
+
     userController.createUser(mockRequest, mockResponse);
     expect(mockResponse.state.status).toBe(400);
     expect(mockResponse.state.json).toMatchObject({ message: 'Bad request: senha obrigatória' });
@@ -79,11 +79,23 @@ describe('UserController', () => {
 
   it('Deve executar função deleteUser()', () => {
     const mockRequest = {} as Request;
-    const mockResponse = makeMockResponse();
+
 
     userController.deleteUser(mockRequest, mockResponse);
 
     expect(mockResponse.state.status).toBe(200);
     expect(mockResponse.state.json).toMatchObject({ message: 'Usuário deletado' });
   });
+
+  it('Deve retornar o usuário com userId informador', () => {
+    const mockRequest = makeMockRequest({
+      params: {
+        userId: '123456',
+      }
+    })
+
+    userController.getUser(mockRequest, mockResponse)
+    expect(mockUserService.getUser).toHaveBeenCalledWith('123456');
+    expect(mockResponse.state.status).toBe(200);
+  })
 });

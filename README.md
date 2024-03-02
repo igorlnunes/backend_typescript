@@ -1,4 +1,4 @@
-# DioBank API - Desafio Final
+# DioBank API
 
 Este repositório representa o desafio final do curso de "Introdução ao Node com TypeScript" da [Digital Innovation One (DIO)](https://www.dio.me/), onde o objetivo é criar uma API para o DioBank.
 
